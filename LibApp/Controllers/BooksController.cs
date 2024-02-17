@@ -10,24 +10,29 @@ namespace LibApp.Controllers
 {
     public class BooksController : Controller
     {
-        public BooksController(ApplicationDbContext context) {
+        public BooksController(ApplicationDbContext context)
+        {
             _context = context;
         }
 
         // GET: BooksController
         public ActionResult Index()
         {
-            var books = _context.Books.Include(b => b.Genre).ToList();
-            return View(books);
+
+            return View();
         }
 
         // GET: BooksController/Details/5
-        public ActionResult Details(int id)
+        public IActionResult Details(int id)
         {
             var book = _context.Books
                 .Include(b => b.Genre)
                 .SingleOrDefault(b => b.Id == id);
 
+            if (book == null)
+            {
+                return Content("Book not found");
+            }
             return View(book);
         }
 
@@ -41,6 +46,7 @@ namespace LibApp.Controllers
 
             return View("BookForm", viewModel);
         }
+
 
         // GET: BooksController/Edit/{id}
         public IActionResult Edit(int id)
@@ -65,7 +71,7 @@ namespace LibApp.Controllers
         public IActionResult Random()
         {
             var firstBook = new Book() { Author = "Random author", Title = "Random title" };
-            
+
             // Use for alternative ways of passing data to views
             //ViewData["Book"] = firstBook;
             //ViewBag.Book = firstBook;
@@ -87,6 +93,7 @@ namespace LibApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Save(Book book)
         {
             if (book.Id == 0)
@@ -102,15 +109,9 @@ namespace LibApp.Controllers
                 bookInDb.ReleaseDate = book.ReleaseDate;
                 bookInDb.NumberInStock = book.NumberInStock;
             }
+            _context.SaveChanges();
 
-            try
-            {
-                _context.SaveChanges();
-            }
-            catch (DbUpdateException e)
-            {
-                Console.WriteLine(e);
-            }
+
 
             return RedirectToAction("Index", "Books");
         }

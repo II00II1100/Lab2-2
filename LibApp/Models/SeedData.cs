@@ -29,6 +29,17 @@ namespace LibApp.Models
                 );
 
                 context.SaveChanges();
+
+                if (context.Genre.Any())
+                {
+                    Console.WriteLine("Database already seeded");
+                    return;
+                }
+                context.Genre.AddRange(
+                    new Genre { Id = 1, Name = "History" },
+                    new Genre { Id = 2, Name = "Romance" },
+                    new Genre { Id = 3, Name = "Fantasy" });
+                context.SaveChanges();
             }
         }
     }

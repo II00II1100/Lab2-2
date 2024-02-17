@@ -40,31 +40,31 @@ namespace LibApp.Controllers
             return View(customer);
         }
 
-        public IActionResult New() 
+        public IActionResult New()
         {
             var membershipTypes = _context.MembershipTypes.ToList();
             var viewModel = new NewCustomerViewModel { MembershipTypes = membershipTypes };
 
-            return View(viewModel); 
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Save(Customer customer)
         {
-            if (!ModelState.IsValid)
-            {
-                var viewModel = new NewCustomerViewModel
-                {
-                    Customer = customer,
-                    MembershipTypes = _context.MembershipTypes.ToList()
-                };
+            //if (!ModelState.IsValid)
+            //{
+            //    var viewModel = new NewCustomerViewModel
+            //    {
+            //        Customer = customer,
+            //        MembershipTypes = _context.MembershipTypes.ToList()
+            //    };
 
-                return View("New", viewModel);
-            }
+            //    return View("New", viewModel);
+            //}
 
             if (customer.Id == 0)
-            { 
+            {
                 _context.Customers.Add(customer);
             }
             else
@@ -78,7 +78,7 @@ namespace LibApp.Controllers
 
             }
             _context.SaveChanges();
-            
+
             return RedirectToAction("Index", "Customers");
         }
 
@@ -95,7 +95,7 @@ namespace LibApp.Controllers
                 MembershipTypes = _context.MembershipTypes.ToList()
             };
 
-            return View("New", viewModel);
+            return View("Edit", viewModel);
         }
 
         private ApplicationDbContext _context;

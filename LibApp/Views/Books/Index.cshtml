@@ -11,22 +11,48 @@
     <a class="btn btn-primary" asp-action="New">New Book</a>
 </p>
 
-<table class="table table-bordered table-hover">
+<table id="books" class="table table-bordered table-hover">
     <thead>
         <tr>
             <th>Book</th>
-            <th colspan="2">Genre</th>
+            <th >Genre</th>
+            <th> Author</th>
+            
         </tr>
     </thead>
     <tbody>
-        @foreach (var book in Model)
-        {
-            <tr>
-                <td><a asp-action="Edit" asp-route-id="@book.Id">@Html.DisplayFor(modelItem => book.Title)</a></td>
-                <td>@book.Genre.Name</td>
-                <td><a asp-action="Details" asp-route-id="@book.Id">Details</a></td>
-
-            </tr>
-        }
+    
     </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#books').DataTable({
+                ajax: {
+                    url: "api/books",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "title",
+                        render: function (data, type, book) {
+                            return "<a href='books/edit/" + book.id + "'>" + book.title + "</a>";
+                        }
+                    },
+                    {
+                        data: "genre.name"
+                    },
+                    {
+                        data: "author"
+                    },
+                   
+
+                ]
+            });
+        });
+    </script>
+
+   
+    }
